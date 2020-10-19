@@ -2,31 +2,37 @@
 
 #-------------------------------------------------------------------------------
 # Name:         drawCluster
-# Description:
+# Description:  这个文件主要用于绘制图像，需要传入指定的文本(csv或者txt)
+#                   且必须为三种数据，原始数据集合、中心点、点的标签
 # Author:       adwin
 # Date:         2020-10-18
 #-------------------------------------------------------------------------------
 import matplotlib.pyplot as plt#约定俗成的写法plt
 from numpy import *
-# 加载数据
-def loadDataSet(fileName):  # 解析文件，按tab分割字段，得到一个浮点数字类型的矩阵
+# 加载数据，注意区分加载的文件是csv还是txt文件。
+def loadDataSet(fileName):  # 解析文件txt，按tab分割字段，得到一个浮点数字类型的矩阵(解析csv文件一般用','作为分隔符)
     dataMat = []              # 文件的最后一个字段是类别标签
     fr = open(fileName)
     for line in fr.readlines():
-        curLine = line.strip().split('\t')
+        curLine = line.strip().split(',')
         fltLine = list(map(float, curLine))    # 将每个元素转成float类型，注意这里一定要转成列表类型。
         dataMat.append(fltLine)
     return dataMat
 
-def draw(data,center,label,k):
+#图像的绘制，
+# data：数据集合,
+# center：中心点,
+# labels：标签，用于区分数据属于哪一簇,
+# k：聚类的数量。
+def draw(data,center,labels,k):
     length=len(center)
-    fig=plt.figure
+    # fig=plt.figure
     data1 = []
     data2 = []
     data3 = []
     for i in range(k):
-        for j in range(len(label)):
-            if label[j] == i:
+        for j in range(len(labels)):
+            if labels[j] == i:
                 data1.append(data[j,:])
         data2.append(data1)
         data1 = []
@@ -53,13 +59,10 @@ def draw(data,center,label,k):
         (center[i,0]+1,center[i,1]+1),arrowprops=dict(facecolor='red'))
     plt.show()
 
+#数据加载，转化成列表的形式。
+myCentroids = mat(loadDataSet('质心.csv'))   #质心
+datMat = mat(loadDataSet('ban.csv'))  #数据集
+labels = mat(loadDataSet('标签.csv'))   #数据标签
+draw(array(datMat),myCentroids,labels,2)
 
-datMat1 = mat(loadDataSet('数据1.txt'))   #质心
-datMat2 = mat(loadDataSet('testSet2.txt'))  #数据集
-datMat3 = mat(loadDataSet('数据3.txt'))   #数据标签
-draw(array(datMat2),datMat1,datMat3,3)
-#draw(datMat2,datMat1)
 
-'''[[ 2.93386365  3.12782785]
- [-2.94737575  3.3263781 ]
- [-0.45965615 -2.7782156 ]]'''
