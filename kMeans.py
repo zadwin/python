@@ -2,6 +2,17 @@
 # coding=utf-8
 import matplotlib.pyplot as plt#约定俗成的写法plt
 from numpy import *
+import datetime
+# 导入CSV安装包
+import csv
+
+# 1. 创建文件对象
+f = open('标签.csv','w',encoding='utf-8',newline="")
+
+# 2. 基于文件对象构建 csv写入对象
+csv_writer = csv.writer(f)
+
+starttime = datetime.datetime.now()
 # 加载数据
 def loadDataSet(fileName):  # 解析文件，按tab分割字段，得到一个浮点数字类型的矩阵
     dataMat = []              # 文件的最后一个字段是类别标签
@@ -62,6 +73,9 @@ def draw(data,center):
         plt.annotate('center',xy=(center[i,0],center[i,1]),xytext=\
         (center[i,0]+1,center[i,1]+1),arrowprops=dict(facecolor='red'))
     plt.show()
+#def saveAsCsv(data,fileName):
+
+
 
 # --------------------测试----------------------------------------------------
 # 用测试数据及测试kmeans算法
@@ -72,4 +86,16 @@ print(myCentroids)
 print(type(myCentroids))
 print(clustAssing)
 print(type(datMat))
+
+data = array(clustAssing)
+for item in data:
+    i = []
+    item = array(item)
+    i.append(item[0])
+    csv_writer.writerow(i)
+# 5. 关闭文件
+f.close()
+
+endtime = datetime.datetime.now()
+print((endtime - starttime))
 draw(array(datMat),myCentroids)
